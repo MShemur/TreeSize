@@ -10,7 +10,7 @@ namespace TreeeSizeWinFormUI
 {
     public partial class TreeSizeForm : Form
     {
-        List<string> Drives = new List<string>();
+        List<string> drives = new List<string>();
         string selectedDrive;
 
         public TreeSizeForm()
@@ -25,16 +25,16 @@ namespace TreeeSizeWinFormUI
             {
                 if (driveInfo.IsReady)
                 {
-                    Drives.Add(driveInfo.Name);
+                    drives.Add(driveInfo.Name);
                 }
             }
             this.DiskListDropDown.SelectedIndexChanged -= new EventHandler(DiskListDropDown_SelectedIndexChanged);
-            DiskListDropDown.DataSource = Drives;
+            DiskListDropDown.DataSource = drives;
             this.DiskListDropDown.SelectedIndexChanged += new EventHandler(DiskListDropDown_SelectedIndexChanged);
             DiskListDropDown.SelectedItem = null;
         }
 
-        private void PopulateTreeView2(string drive)
+        private void PopulateTreeView(string drive)
         {
             TreeNode rootNode;
             Folder folder = new Folder(drive);
@@ -170,7 +170,7 @@ namespace TreeeSizeWinFormUI
             SetWindowTheme(treeHandle, "explorer", null);
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void TreeSizeForm_Load(object sender, EventArgs e)
         {
             SetTreeViewTheme(treeView1.Handle);
         }
@@ -180,7 +180,7 @@ namespace TreeeSizeWinFormUI
             if (DiskListDropDown.SelectedItem != null)
             {
                 selectedDrive = DiskListDropDown.SelectedItem.ToString();
-                PopulateTreeView2(selectedDrive);
+                PopulateTreeView(selectedDrive);
             }
         }
     }

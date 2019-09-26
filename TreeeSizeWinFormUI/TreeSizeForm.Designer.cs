@@ -150,7 +150,7 @@
             this.MinimumSize = new System.Drawing.Size(815, 490);
             this.Name = "Form1";
             this.Text = "TreeSize";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.TreeSizeForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
