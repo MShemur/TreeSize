@@ -31,14 +31,16 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TreeSizeForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.DiskListDropDown = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.DiskListDropDown = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.logMessagesTextBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -50,6 +52,7 @@
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.splitContainer1.Location = new System.Drawing.Point(0, 57);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -60,29 +63,9 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listView1);
-            this.splitContainer1.Size = new System.Drawing.Size(1076, 536);
+            this.splitContainer1.Size = new System.Drawing.Size(1076, 454);
             this.splitContainer1.SplitterDistance = 357;
             this.splitContainer1.TabIndex = 0;
-            // 
-            // DiskListDropDown
-            // 
-            this.DiskListDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.DiskListDropDown.FormattingEnabled = true;
-            this.DiskListDropDown.Location = new System.Drawing.Point(78, 12);
-            this.DiskListDropDown.Name = "DiskListDropDown";
-            this.DiskListDropDown.Size = new System.Drawing.Size(69, 21);
-            this.DiskListDropDown.TabIndex = 2;
-            this.DiskListDropDown.SelectedIndexChanged += new System.EventHandler(this.DiskListDropDown_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(7, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Choose disk";
             // 
             // treeView1
             // 
@@ -94,7 +77,7 @@
             this.treeView1.Location = new System.Drawing.Point(0, 3);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(354, 533);
+            this.treeView1.Size = new System.Drawing.Size(354, 451);
             this.treeView1.TabIndex = 0;
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView1_NodeMouseClick);
             // 
@@ -117,7 +100,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 3);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(715, 533);
+            this.listView1.Size = new System.Drawing.Size(715, 451);
             this.listView1.SmallImageList = this.imageList1;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -128,27 +111,70 @@
             this.columnHeader1.Text = "Name";
             this.columnHeader1.Width = 140;
             // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Length";
-            this.columnHeader3.Width = 139;
-            // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Type";
             this.columnHeader2.Width = 139;
             // 
-            // Form1
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Length";
+            this.columnHeader3.Width = 139;
+            // 
+            // DiskListDropDown
+            // 
+            this.DiskListDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DiskListDropDown.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DiskListDropDown.FormattingEnabled = true;
+            this.DiskListDropDown.Location = new System.Drawing.Point(96, 12);
+            this.DiskListDropDown.Name = "DiskListDropDown";
+            this.DiskListDropDown.Size = new System.Drawing.Size(69, 24);
+            this.DiskListDropDown.TabIndex = 2;
+            this.DiskListDropDown.SelectedIndexChanged += new System.EventHandler(this.DiskListDropDown_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(7, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(83, 16);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Choose disk";
+            // 
+            // logMessagesTextBox
+            // 
+            this.logMessagesTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.logMessagesTextBox.Location = new System.Drawing.Point(10, 539);
+            this.logMessagesTextBox.Multiline = true;
+            this.logMessagesTextBox.Name = "logMessagesTextBox";
+            this.logMessagesTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logMessagesTextBox.Size = new System.Drawing.Size(560, 104);
+            this.logMessagesTextBox.TabIndex = 3;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(7, 518);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(103, 16);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Errors detected:";
+            // 
+            // TreeSizeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1076, 593);
+            this.ClientSize = new System.Drawing.Size(1076, 655);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.logMessagesTextBox);
             this.Controls.Add(this.DiskListDropDown);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(815, 490);
-            this.Name = "Form1";
+            this.Name = "TreeSizeForm";
             this.Text = "TreeSize";
             this.Load += new System.EventHandler(this.TreeSizeForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -171,6 +197,8 @@
         private System.Windows.Forms.ComboBox DiskListDropDown;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.TextBox logMessagesTextBox;
+        private System.Windows.Forms.Label label2;
     }
 }
 

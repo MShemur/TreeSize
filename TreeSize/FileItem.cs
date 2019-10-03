@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
-using ByteSizeLib;
 
 namespace TreeSize
 {
     public class FileItem
     {
+        private const double BYTES_IN_KILOBYTES = 1024;
+        private const double BYTES_IN_MEGABYTES = 1048576;
+        private const double BYTES_IN_GIGABYTES = 1073741824;
         public string Path { get; set; }
         public string Name
         {
@@ -19,22 +22,21 @@ namespace TreeSize
         {
             get
             {
-                if (sizeBytes < ByteSize.BytesInKiloByte)
+                if (sizeBytes < BYTES_IN_KILOBYTES)
                 {
                     return Math.Round(sizeBytes, 1).ToString() + " b";
                 }
-                else if (sizeBytes < ByteSize.BytesInMegaByte)
+                else if (sizeBytes < BYTES_IN_MEGABYTES)
                 {
-                    return Math.Round(ByteSize.FromBytes(sizeBytes).KiloBytes, 1).ToString() + " kB";
-
+                    return Math.Round(sizeBytes.BytesToKilobytes(), 1).ToString() + " kB";
                 }
-                else if (sizeBytes < ByteSize.BytesInGigaByte)
+                else if (sizeBytes < BYTES_IN_GIGABYTES)
                 {
-                    return Math.Round(ByteSize.FromBytes(sizeBytes).MegaBytes, 1).ToString() + " MB";
+                    return Math.Round(sizeBytes.BytesToMegabytes(), 1).ToString() + " MB";
                 }
                 else
                 {
-                    return Math.Round(ByteSize.FromBytes(sizeBytes).GigaBytes, 1).ToString() + " GB";
+                    return Math.Round(sizeBytes.BytesToGigabytes(), 1).ToString() + " GB";
                 }
             }
         }
@@ -56,15 +58,15 @@ namespace TreeSize
 
         private double GetFileSize()
         {
-            double size=0;
+            double size = 0;
             try
             {
                 var info = new FileInfo(Path);
                 size = info.Length;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.Message);
+                throw;
             }
             return size;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -10,8 +11,9 @@ namespace TreeeSizeWinFormUI
 {
     public partial class TreeSizeForm : Form
     {
-        List<string> drives = new List<string>();
-        string selectedDrive;
+        private List<string> drives = new List<string>();
+        private string selectedDrive;
+        private StringCollection log;
 
         public TreeSizeForm()
         {
@@ -36,8 +38,20 @@ namespace TreeeSizeWinFormUI
 
         private void PopulateTreeView(string drive)
         {
+            log = new StringCollection();
             TreeNode rootNode;
-            Folder folder = new Folder(drive);
+            Folder folder = null;
+            try
+            {
+                folder = new Folder(@"C:\Users\Public");
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var ex in ae.Flatten().InnerExceptions)
+                {
+                    log.Add(ex.Message);
+                }
+            }
             if (folder != null)
             {
                 rootNode = new TreeNode(folder.Path);
@@ -45,6 +59,14 @@ namespace TreeeSizeWinFormUI
                 GetDirectories(folder.SubFolders.ToList(), rootNode);
                 treeView1.Nodes.Add(rootNode);
                 AddFilesNode(rootNode, folder);
+            }
+        }
+
+        private void WriteLogs()
+        {
+            foreach (string item in log)
+            {
+                logMessagesTextBox.Text += item.ToString() + "\r\n";
             }
         }
 
@@ -72,7 +94,6 @@ namespace TreeeSizeWinFormUI
             {
                 Files = folder.Files.ToList();
             }
-
             if (Files != null)
                 foreach (var file in Files)
                 {
@@ -182,6 +203,7 @@ namespace TreeeSizeWinFormUI
                 selectedDrive = DiskListDropDown.SelectedItem.ToString();
                 PopulateTreeView(selectedDrive);
             }
+            WriteLogs();
         }
     }
 }
