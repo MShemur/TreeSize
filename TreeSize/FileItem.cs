@@ -6,10 +6,11 @@ namespace TreeSize
 {
     public class FileItem
     {
-        private const double BYTES_IN_KILOBYTES = 1024;
-        private const double BYTES_IN_MEGABYTES = 1048576;
-        private const double BYTES_IN_GIGABYTES = 1073741824;
-        public string Path { get; set; }
+        public StringCollection log = new StringCollection();
+        private const double BYTES_IN_KILOBYTE = 1024;
+        private const double BYTES_IN_MEGABYTE = 1048576;
+        private const double BYTES_IN_GIGABYTE = 1073741824;
+        private string Path { get; set; }
         public string Name
         {
             get
@@ -22,15 +23,15 @@ namespace TreeSize
         {
             get
             {
-                if (sizeBytes < BYTES_IN_KILOBYTES)
+                if (sizeBytes < BYTES_IN_KILOBYTE)
                 {
                     return Math.Round(sizeBytes, 1).ToString() + " b";
                 }
-                else if (sizeBytes < BYTES_IN_MEGABYTES)
+                else if (sizeBytes < BYTES_IN_MEGABYTE)
                 {
                     return Math.Round(sizeBytes.BytesToKilobytes(), 1).ToString() + " kB";
                 }
-                else if (sizeBytes < BYTES_IN_GIGABYTES)
+                else if (sizeBytes < BYTES_IN_GIGABYTE)
                 {
                     return Math.Round(sizeBytes.BytesToMegabytes(), 1).ToString() + " MB";
                 }
@@ -47,7 +48,6 @@ namespace TreeSize
             {
                 return Math.Round(sizeBytes, 1);
             }
-            private set { }
         }
 
         public FileItem(string path)
@@ -64,9 +64,9 @@ namespace TreeSize
                 var info = new FileInfo(Path);
                 size = info.Length;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                log.Add(e.Message);
             }
             return size;
         }

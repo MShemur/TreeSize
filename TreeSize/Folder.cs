@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TreeSize
 {
     public class Folder
     {
+        public StringCollection log = new StringCollection();
+
         private const double BYTES_IN_KILOBYTES = 1024;
         private const double BYTES_IN_MEGABYTES = 1048576;
         private const double BYTES_IN_GIGABYTES = 1073741824;
         private const int FILES_WITHOUT_VIRTUAL_SUBFOLDER = 3;
         private readonly object balanceLock = new object();
-        public string Path { get; set; }
+        public string Path { get; }
         public string Name
         {
             get
@@ -21,18 +25,18 @@ namespace TreeSize
                 return new DirectoryInfo(Path).Name;
             }
         }
-        public ConcurrentBag<Folder> SubFolders { get; set; }
-        public Folder FilesVirtualSubFolder;
-        public ConcurrentBag<FileItem> Files { get; set; }
+        public ConcurrentBag<Folder> SubFolders { get; }
+        public Folder FilesVirtualSubFolder { get; private set; }
+        public ConcurrentBag<FileItem> Files { get; private set; }
         private double filesSize;
         private double sizeBytes;
-        public double SizeBytes
+        private double SizeBytes
         {
             get
             {
                 return Math.Round(sizeBytes, 1);
             }
-            private set
+            set
             {
                 sizeBytes = value;
             }
@@ -43,20 +47,20 @@ namespace TreeSize
             {
                 if (sizeBytes < BYTES_IN_KILOBYTES)
                 {
-                    return Math.Round(sizeBytes, 1).ToString() + " b";
+                    return Math.Round(sizeBytes, 1) + " b";
                 }
                 else if (sizeBytes < BYTES_IN_MEGABYTES)
                 {
-                    return Math.Round(sizeBytes.BytesToKilobytes(), 1).ToString() + " kB";
+                    return Math.Round(sizeBytes.BytesToKilobytes(), 1) + " kB";
 
                 }
                 else if (sizeBytes < BYTES_IN_GIGABYTES)
                 {
-                    return Math.Round(sizeBytes.BytesToMegabytes(), 1).ToString() + " MB";
+                    return Math.Round(sizeBytes.BytesToMegabytes(), 1) + " MB";
                 }
                 else
                 {
-                    return Math.Round(sizeBytes.BytesToGigabytes(), 1).ToString() + " GB";
+                    return Math.Round(sizeBytes.BytesToGigabytes(), 1) + " GB";
                 }
             }
         }
@@ -66,11 +70,34 @@ namespace TreeSize
             SubFolders = new ConcurrentBag<Folder>();
             Files = new ConcurrentBag<FileItem>();
             Path = folderPath;
-            FillInnerFilesList(this);
-            FillInnerFoldersList();
+            FillFilesAndFolders();
             filesSize = GetFilesSize();
             sizeBytes = GetFolderSize();
             MakeFolderForFiles();
+        }
+
+        private void FillFilesAndFolders()
+        {
+            try
+            {
+                FillInnerFilesList(this);
+                FillInnerFoldersList();
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var ex in ae.Flatten().InnerExceptions)
+                {
+                    log.Add(ex.Message);
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                log.Add(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                log.Add(ex.Message);
+            }
         }
 
         private double GetFilesSize()
@@ -101,26 +128,14 @@ namespace TreeSize
         {
             if (Files.Count > FILES_WITHOUT_VIRTUAL_SUBFOLDER)
             {
-                FilesVirtualSubFolder = new Folder(Path + @"\Files") { SizeBytes = filesSize };
-                FilesVirtualSubFolder.Files = Files;
+                FilesVirtualSubFolder = new Folder(Path + @"\Files") { SizeBytes = filesSize, Files = Files };
             }
         }
 
         private void FillInnerFoldersList()
         {
             IEnumerable<string> dirs = null;
-            try
-            {
-                dirs = Directory.EnumerateDirectories(Path, "*", SearchOption.TopDirectoryOnly);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            dirs = Directory.EnumerateDirectories(Path, "*", SearchOption.TopDirectoryOnly);
 
             if (dirs != null)
             {
@@ -129,24 +144,29 @@ namespace TreeSize
                     var exceptions = new ConcurrentQueue<Exception>();
 
                     Parallel.ForEach(dirs, directory =>
+                {
+                    try
                     {
-                        try
+                        Folder baseFolder = new Folder(directory);
+                        SubFolders.Add(baseFolder);
+                        foreach (var item in baseFolder.log)
                         {
-                            SubFolders.Add(new Folder(directory));
+                            log.Add(item);
                         }
-                        catch (Exception e)
-                        {
-                            exceptions.Enqueue(e);
-                        }
-                    });
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Enqueue(e);
+                    }
+                });
                     if (exceptions.Count > 0)
                     {
                         throw new AggregateException(exceptions);
                     }
                 }
-                catch (AggregateException)
+                catch (AggregateException e)
                 {
-                    throw;
+                    throw e;
                 }
             }
         }
@@ -155,21 +175,19 @@ namespace TreeSize
         {
             string path = folder.Path;
             IEnumerable<string> files = null;
-            if (Directory.Exists(path))
-                try
-                {
-                    files = Directory.EnumerateFiles(Path, "*", SearchOption.TopDirectoryOnly);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+            if (Directory.Exists(path)) files = Directory.EnumerateFiles(Path, "*", SearchOption.TopDirectoryOnly);
             if (files != null)
                 lock (balanceLock)
                 {
                     Parallel.ForEach(files, directory =>
                 {
-                    Files.Add(new FileItem(directory));
+
+                    FileItem item = new FileItem(directory);
+                    Files.Add(item);
+                    foreach (var lg in item.log)
+                    {
+                        log.Add(lg);
+                    }
                 });
                 }
         }

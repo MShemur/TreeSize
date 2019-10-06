@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TreeeSizeWinFormUI.Properties
+namespace TreeSizeWinFormUI.Properties
 {
 
 

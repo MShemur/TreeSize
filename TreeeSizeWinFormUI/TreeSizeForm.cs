@@ -7,13 +7,12 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TreeSize;
 
-namespace TreeeSizeWinFormUI
+namespace TreeSizeWinFormUI
 {
     public partial class TreeSizeForm : Form
     {
         private List<string> drives = new List<string>();
         private string selectedDrive;
-        private StringCollection log;
 
         public TreeSizeForm()
         {
@@ -38,20 +37,11 @@ namespace TreeeSizeWinFormUI
 
         private void PopulateTreeView(string drive)
         {
-            log = new StringCollection();
+            treeView1.Nodes.Clear();
             TreeNode rootNode;
             Folder folder = null;
-            try
-            {
-                folder = new Folder(@"C:\Users\Public");
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var ex in ae.Flatten().InnerExceptions)
-                {
-                    log.Add(ex.Message);
-                }
-            }
+            folder = new Folder(drive);
+            WriteLogs(folder.log);
             if (folder != null)
             {
                 rootNode = new TreeNode(folder.Path);
@@ -62,8 +52,9 @@ namespace TreeeSizeWinFormUI
             }
         }
 
-        private void WriteLogs()
+        private void WriteLogs(StringCollection log)
         {
+            logMessagesTextBox.Text = "";
             foreach (string item in log)
             {
                 logMessagesTextBox.Text += item.ToString() + "\r\n";
@@ -198,12 +189,12 @@ namespace TreeeSizeWinFormUI
 
         private void DiskListDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
+
             if (DiskListDropDown.SelectedItem != null)
             {
                 selectedDrive = DiskListDropDown.SelectedItem.ToString();
                 PopulateTreeView(selectedDrive);
             }
-            WriteLogs();
         }
     }
 }

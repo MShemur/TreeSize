@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TreeeSizeWinFormUI
+namespace TreeSizeWinFormUI
 {
     static class Program
     {
@@ -9,11 +9,20 @@ namespace TreeeSizeWinFormUI
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
+        
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TreeSizeForm());
+            try
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new TreeSizeForm());
+            }
+            catch ( Exception)
+            {
+
+            }
         }
+
     }
 }

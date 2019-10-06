@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeSize", "TreeSize\TreeSize.csproj", "{35DB1DBA-BA14-4AC4-9675-CBB6980D450D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeeSizeWinFormUI", "TreeeSizeWinFormUI\TreeeSizeWinFormUI.csproj", "{2712420B-BFDB-4F67-A683-09719AA3AE1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeSizeWinFormUI", "TreeeSizeWinFormUI\TreeSizeWinFormUI.csproj", "{2712420B-BFDB-4F67-A683-09719AA3AE1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
