@@ -6,7 +6,6 @@ namespace TreeSize
 {
     public class FileItem : BaseItem
     {
-        private string Path { get;  }
         public string Name
         {
             get

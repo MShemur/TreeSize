@@ -10,7 +10,7 @@ namespace TreeSize
     {
         private const int FILES_WITHOUT_VIRTUAL_SUBFOLDER = 3;
         private readonly object balanceLock = new object();
-        public string Path { get; }
+
         public string Name
         {
             get

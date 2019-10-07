@@ -9,7 +9,7 @@ namespace TreeSize
         protected double BYTES_IN_MEGABYTE = 1048576;
         protected double BYTES_IN_GIGABYTE = 1073741824;
         public StringCollection log = new StringCollection();
-
+        public string Path { get; protected set; }
         protected double sizeBytes;
         public double SizeBytes
         {
