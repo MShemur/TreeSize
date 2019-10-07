@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace TreeSize
 {
-    public class Folder
+    public class FolderItem : BaseItem
     {
-        public StringCollection log = new StringCollection();
-
-        private const double BYTES_IN_KILOBYTES = 1024;
-        private const double BYTES_IN_MEGABYTES = 1048576;
-        private const double BYTES_IN_GIGABYTES = 1073741824;
         private const int FILES_WITHOUT_VIRTUAL_SUBFOLDER = 3;
         private readonly object balanceLock = new object();
         public string Path { get; }
@@ -25,53 +18,18 @@ namespace TreeSize
                 return new DirectoryInfo(Path).Name;
             }
         }
-        public ConcurrentBag<Folder> SubFolders { get; }
-        public Folder FilesVirtualSubFolder { get; private set; }
+        public ConcurrentBag<FolderItem> SubFolders { get; }
+        public FolderItem FilesVirtualSubFolder { get; private set; }
         public ConcurrentBag<FileItem> Files { get; private set; }
-        private double filesSize;
-        private double sizeBytes;
-        private double SizeBytes
-        {
-            get
-            {
-                return Math.Round(sizeBytes, 1);
-            }
-            set
-            {
-                sizeBytes = value;
-            }
-        }
-        public string Size
-        {
-            get
-            {
-                if (sizeBytes < BYTES_IN_KILOBYTES)
-                {
-                    return Math.Round(sizeBytes, 1) + " b";
-                }
-                else if (sizeBytes < BYTES_IN_MEGABYTES)
-                {
-                    return Math.Round(sizeBytes.BytesToKilobytes(), 1) + " kB";
+        private double sizeOfFiles;
 
-                }
-                else if (sizeBytes < BYTES_IN_GIGABYTES)
-                {
-                    return Math.Round(sizeBytes.BytesToMegabytes(), 1) + " MB";
-                }
-                else
-                {
-                    return Math.Round(sizeBytes.BytesToGigabytes(), 1) + " GB";
-                }
-            }
-        }
-
-        public Folder(string folderPath)
+        public FolderItem(string folderPath)
         {
-            SubFolders = new ConcurrentBag<Folder>();
+            SubFolders = new ConcurrentBag<FolderItem>();
             Files = new ConcurrentBag<FileItem>();
             Path = folderPath;
             FillFilesAndFolders();
-            filesSize = GetFilesSize();
+            sizeOfFiles = GetFilesSize();
             sizeBytes = GetFolderSize();
             MakeFolderForFiles();
         }
@@ -113,7 +71,7 @@ namespace TreeSize
 
         private double GetFolderSize()
         {
-            double size = filesSize;
+            double size = sizeOfFiles;
             if (SubFolders.Count > 0)
             {
                 foreach (var item in SubFolders)
@@ -128,7 +86,7 @@ namespace TreeSize
         {
             if (Files.Count > FILES_WITHOUT_VIRTUAL_SUBFOLDER)
             {
-                FilesVirtualSubFolder = new Folder(Path + @"\Files") { SizeBytes = filesSize, Files = Files };
+                FilesVirtualSubFolder = new FolderItem(Path + @"\Files") { SizeBytes = sizeOfFiles, Files = Files };
             }
         }
 
@@ -147,7 +105,7 @@ namespace TreeSize
                 {
                     try
                     {
-                        Folder baseFolder = new Folder(directory);
+                        FolderItem baseFolder = new FolderItem(directory);
                         SubFolders.Add(baseFolder);
                         foreach (var item in baseFolder.log)
                         {
@@ -171,7 +129,7 @@ namespace TreeSize
             }
         }
 
-        private void FillInnerFilesList(Folder folder)
+        private void FillInnerFilesList(FolderItem folder)
         {
             string path = folder.Path;
             IEnumerable<string> files = null;

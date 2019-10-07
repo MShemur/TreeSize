@@ -4,13 +4,9 @@ using System.IO;
 
 namespace TreeSize
 {
-    public class FileItem
+    public class FileItem : BaseItem
     {
-        public StringCollection log = new StringCollection();
-        private const double BYTES_IN_KILOBYTE = 1024;
-        private const double BYTES_IN_MEGABYTE = 1048576;
-        private const double BYTES_IN_GIGABYTE = 1073741824;
-        private string Path { get; set; }
+        private string Path { get;  }
         public string Name
         {
             get
@@ -18,38 +14,7 @@ namespace TreeSize
                 return System.IO.Path.GetFileName(Path);
             }
         }
-        private double sizeBytes;
-        public string Size
-        {
-            get
-            {
-                if (sizeBytes < BYTES_IN_KILOBYTE)
-                {
-                    return Math.Round(sizeBytes, 1).ToString() + " b";
-                }
-                else if (sizeBytes < BYTES_IN_MEGABYTE)
-                {
-                    return Math.Round(sizeBytes.BytesToKilobytes(), 1).ToString() + " kB";
-                }
-                else if (sizeBytes < BYTES_IN_GIGABYTE)
-                {
-                    return Math.Round(sizeBytes.BytesToMegabytes(), 1).ToString() + " MB";
-                }
-                else
-                {
-                    return Math.Round(sizeBytes.BytesToGigabytes(), 1).ToString() + " GB";
-                }
-            }
-        }
-
-        public double SizeBytes
-        {
-            get
-            {
-                return Math.Round(sizeBytes, 1);
-            }
-        }
-
+        
         public FileItem(string path)
         {
             Path = path;

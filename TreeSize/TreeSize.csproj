@@ -40,9 +40,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseItem.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FileItem.cs" />
-    <Compile Include="Folder.cs" />
+    <Compile Include="FolderItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

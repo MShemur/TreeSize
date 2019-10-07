@@ -39,8 +39,8 @@ namespace TreeSizeWinFormUI
         {
             treeView1.Nodes.Clear();
             TreeNode rootNode;
-            Folder folder = null;
-            folder = new Folder(drive);
+            FolderItem folder = null;
+            folder = new FolderItem(drive);
             WriteLogs(folder.log);
             if (folder != null)
             {
@@ -61,7 +61,7 @@ namespace TreeSizeWinFormUI
             }
         }
 
-        private void AddFilesNode(TreeNode rootNode, Folder folder)
+        private void AddFilesNode(TreeNode rootNode, FolderItem folder)
         {
             if (folder.FilesVirtualSubFolder != null)
             {
@@ -78,7 +78,7 @@ namespace TreeSizeWinFormUI
             }
         }
 
-        private void LoadFiles(Folder folder, TreeNode tds)
+        private void LoadFiles(FolderItem folder, TreeNode tds)
         {
             List<FileItem> Files = null;
             if (folder?.Files != null)
@@ -95,11 +95,11 @@ namespace TreeSizeWinFormUI
                 }
         }
 
-        private void GetDirectories(List<Folder> subDirs, TreeNode nodeToAddTo)
+        private void GetDirectories(List<FolderItem> subDirs, TreeNode nodeToAddTo)
         {
             TreeNode aNode;
-            List<Folder> subSubDirs;
-            foreach (Folder subDir in subDirs)
+            List<FolderItem> subSubDirs;
+            foreach (FolderItem subDir in subDirs)
             {
                 aNode = new TreeNode(subDir.Name, 0, 0);
                 aNode.Tag = subDir;
@@ -116,12 +116,12 @@ namespace TreeSizeWinFormUI
 
         private void TreeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Folder nodeDirInfo = null;
+            FolderItem nodeDirInfo = null;
             TreeNode newSelected = e.Node;
             listView1.Items.Clear();
-            if (newSelected.Tag.GetType() == typeof(Folder))
+            if (newSelected.Tag.GetType() == typeof(FolderItem))
             {
-                nodeDirInfo = (Folder)newSelected.Tag;
+                nodeDirInfo = (FolderItem)newSelected.Tag;
             }
             ListViewItem.ListViewSubItem[] subItems;
             ListViewItem item = null;
@@ -135,7 +135,7 @@ namespace TreeSizeWinFormUI
                     };
                 item.SubItems.AddRange(subItems);
                 listView1.Items.Add(item);
-                foreach (Folder dir in nodeDirInfo.SubFolders)
+                foreach (FolderItem dir in nodeDirInfo.SubFolders)
                 {
                     item = new ListViewItem(dir.Name, 0);
                     subItems = new ListViewItem.ListViewSubItem[]
@@ -160,7 +160,7 @@ namespace TreeSizeWinFormUI
                     }
                 if (nodeDirInfo.FilesVirtualSubFolder != null)
                 {
-                    Folder fileSubFoler = nodeDirInfo.FilesVirtualSubFolder;
+                    FolderItem fileSubFoler = nodeDirInfo.FilesVirtualSubFolder;
                     item = new ListViewItem("[" + nodeDirInfo.FilesVirtualSubFolder?.Files.Count + " files in " + nodeDirInfo.Path + "]", 200);
                     subItems = new ListViewItem.ListViewSubItem[]
                         {
